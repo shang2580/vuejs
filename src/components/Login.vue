@@ -5,6 +5,8 @@
       <div class="avatar_box">
         <img src="../assets/logo.png" alt="javascript" />
       </div>
+
+
       <!-- 登录表单区域 -->
       <div class="login_from">
         <el-form
@@ -15,12 +17,12 @@
         >
           <!-- 用户名 -->
           <el-form-item prop="name">
-            <el-input prefix-icon="el-icon-user" v-model="form.name"></el-input>
+            <el-input prefix-icon="iconfont icon-user" v-model="form.name"></el-input>
           </el-form-item>
           <!-- 密码 -->
           <el-form-item prop="region">
             <el-input
-              prefix-icon="el-icon-s-goods"
+              prefix-icon="iconfont icon-3702mima"
               v-model="form.region"
             ></el-input>
           </el-form-item>
@@ -118,8 +120,11 @@ export default {
     //  },
 
     // 点击重置按钮
-    resetLoginFrom() {
+    resetLoginFrom() {  
+       // UI 内部方法  
       this.$refs.ruleForm.resetFields();
+      // console.log(this.$refs.ruleForm.resetFields())
+
     },
     //  表单登录校验
     Login_From() {
@@ -131,10 +136,12 @@ export default {
             password: this.form.region,
           });
 
-           if(result.meta.status !==200){
+           if(result.meta.status !==200){  
+             // ui组件 失败弹窗提醒 
              return this.$message.error("登录失败");
            }else{
                 window.sessionStorage.setItem("token",result.data.token)
+                 // ui组件 成功弹窗提醒 
                return this.$message.success('登录成功')
               
            }
@@ -183,7 +190,7 @@ export default {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background-color: burlywood;
+  /* background-color: burlywood; */
 }
 .btns {
   display: flex;
