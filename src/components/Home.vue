@@ -14,36 +14,49 @@
     <el-container>
       <!-- // 左侧菜单栏区域 -->
 
-      <el-aside width="200px">
-        <!-- 侧边栏菜单区域 -->
+      <el-aside :width="isCollpse? '64px' : '200px'">
+   
+       <div class = "menu_button" v-on:click="toppleCollapse">|||</div>
 
-        
+        <!-- 侧边栏菜单区域 -->   
+            <!--  设置 菜单栏展示单独展示 设置菜单栏 特性  -->
         <el-menu
           background-color="#545c64"
           text-color="#fff"
-          active-text-color="#ffd04b"
-        >
-          <el-submenu index="1">
-            <!-- 一级菜单模板区域 -->
+          active-text-color="#409Bff"
+          unique-opened
+          :collapse = isCollpse
+          :collapse-transition = 'false'
+          router
+          
+          
+          
+        >  
+         <!-- 一级菜单模板区域 -->  
+            <!--  因为UI组件  index 需要接受一个字符串的唯一值  通过  item.id 来赋值 -->
+          <el-submenu   :index="item.id + '' "  v-for="item in getmenuList" :key= "item.id">
+           
             <template slot="title">
               <!-- 图标 -->
-              <i class="el-icon-location"></i>
+              <i v-bind:class="iconObj[item.id]"></i>
               <!-- 文本
                -->
-              <span>导航一</span>
+              <span>{{item.authName}}</span>
             </template>
             <!-- 二级菜单 -->
-               <el-menu-item index="1-4-1">
+               <el-menu-item  :index="'/'+ items.path" v-for = "items in item.children"  v-bind:key = "items.id">
                   
-                  <i class="el-icon-location"></i>
-                   <span>导航一</span>
+                   <i class="el-icon-menu"></i>
+                   <span>{{items.authName}}</span>
                </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
 
       <!-- 右侧内容展示区 -->
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -52,10 +65,22 @@
 export default {
   name: "Home",
   data() {
-    return {};
-  },
-  created:{
+    return {
+    //   定义左侧 菜单栏 数据 
+      menuList:[],
+      iconObj:{
+        "125":'iconfont icon-user',
+        "103":"iconfont icon-tijikongjian",
+        "101":"iconfont icon-shangpin",
+        "102":"iconfont icon-danju",
+        "145":"iconfont icon-baobiao"
 
+      },
+      isCollpse:false
+    };
+  },
+  created(){
+         this.getmenuList()
     },
   methods: {
     
@@ -64,10 +89,21 @@ export default {
       window.sessionStorage.clear();
       this.$router.push("/login");
     }, 
+    //  获取左侧菜单栏 请求  
    async getmenuList(){
 
-    const {data: res} = await this.$http.get("menus") 
+    const {data:res} = await this.$http.get("menus") 
       console.log(res)
+      if(res.meta.status!==200){
+         return this.$message.err(res.meta.meg)
+      }else{
+       this.getmenuList = res.data
+      }
+
+    },
+    // 点击按钮切换菜单折叠效果
+    toppleCollapse(){
+        this.isCollpse = !this.isCollpse
     }
   },
 };
@@ -109,5 +145,20 @@ export default {
 
 .el-aside {
   background-color: #333744;
+  
+}
+.iconfont{
+  margin-right: 10px;
+}
+.el-menu{
+  border-right: none;
+}
+.menu_button{
+  background-color: #4a5064;
+  color: aliceblue;
+  text-align: center;
+  line-height: 24px;
+  letter-spacing: 0.2em;
+  cursor: pointer;
 }
 </style>
