@@ -28,6 +28,7 @@
           :collapse = isCollpse
           :collapse-transition = 'false'
           router
+         :default-active = activePath
           
           
           
@@ -44,7 +45,8 @@
               <span>{{item.authName}}</span>
             </template>
             <!-- 二级菜单 -->
-               <el-menu-item  :index="'/'+ items.path" v-for = "items in item.children"  v-bind:key = "items.id">
+            <!--  开启路由跳转地址后 index 属性作为跳转链接 -->
+               <el-menu-item  :index="'/'+ items.path" v-for = "items in item.children"  v-bind:key = "items.id" v-on:click="alickPath('/'+ items.path)">
                   
                    <i class="el-icon-menu"></i>
                    <span>{{items.authName}}</span>
@@ -76,11 +78,14 @@ export default {
         "145":"iconfont icon-baobiao"
 
       },
-      isCollpse:false
+      isCollpse:false,
+      activePath:""
     };
   },
   created(){
          this.getmenuList()
+        //   先保留
+         this.activePath = window.sessionStorage.getItem("active")
     },
   methods: {
     
@@ -104,7 +109,13 @@ export default {
     // 点击按钮切换菜单折叠效果
     toppleCollapse(){
         this.isCollpse = !this.isCollpse
+    },
+    alickPath(active){
+       
+       window.sessionStorage.setItem("active",active)
+       this.activePath = active
     }
+    
   },
 };
 </script>
